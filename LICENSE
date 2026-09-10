@@ -1,0 +1,28 @@
+DriftShield Governance Integration SOP
+Documentation License Notice
+
+Copyright (c) 2026 Stone Shi
+
+Except where otherwise noted, the documentation in this repository is
+licensed under the Creative Commons Attribution 4.0 International
+License (CC BY 4.0).
+
+You are permitted to share and adapt the documentation, including for
+commercial purposes, provided that appropriate attribution is given and
+changes are indicated where applicable.
+
+This license applies to the documentation and integration methodology
+published in this repository.
+
+The license does not grant permission to use DriftShield names, logos,
+trademarks, service marks, or other brand identifiers in a manner that
+suggests endorsement, sponsorship, certification, or affiliation.
+
+Customer-specific data, credentials, private evidence packages,
+non-public runtime artifacts, and other materials not published in this
+repository are not covered by this license.
+
+Reference implementation material is provided for technical explanation
+and interoperability purposes. It does not require an adopting system
+to reproduce DriftShield's internal architecture, schema, runtime
+topology, field names, evidence layout, or visualization model.
