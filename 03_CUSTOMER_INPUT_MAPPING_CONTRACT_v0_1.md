@@ -1,6 +1,6 @@
 # Customer Input Mapping Contract
 
-Version: v0.1
+Version: v0.1.2
 
 Release: Public
 
@@ -54,9 +54,19 @@ The customer may use a field, event property, object attribute, API value, recor
 6. Optional roles may remain unbound.
 7. Cardinality is implementation-defined.
 8. A customer mapping cannot redefine governance-derived or governance-generated authority.
+9. A customer-native execution, workflow, continuity, correlation, account, or similarly named identifier remains customer fact or mapping context and does not become governance identity authority merely because of its name or value.
+10. A customer mapping must not bind a customer-supplied value as the canonical long-term governance identity.
+11. A customer runtime identity must not be treated as authority for the governance-generated session identity.
+12. The canonical long-term governance identity and governance session identity are governance-generated roles and are not customer completion fields in this mapping template.
+13. Customer identity mapping must not authorize canonical identity replacement, existing-history rebinding, or cross-long-term session rebinding.
+14. Reference implementation identifier prefixes and string formats must not be copied as universal customer mapping requirements.
 
 ## 5. Customer-instance completion
 
 The generic template is complete.
 
 A customer instance remains intentionally incomplete until customer-specific bindings are supplied and verified.
+
+Completing customer-specific identity or continuity bindings does not create, select, replace, or authorize the canonical long-term governance identity or governance session identity.
+
+When the selected capability uses long-term governance observation, close evidence must preserve a separate boundary between customer-provided identity context and governance-generated long-term and session identities.

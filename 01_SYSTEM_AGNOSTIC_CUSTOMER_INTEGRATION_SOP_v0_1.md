@@ -1,6 +1,6 @@
 # System-Agnostic Customer Governance Integration SOP
 
-Version: v0.1.1
+Version: v0.1.2
 
 Release: Public
 
@@ -74,6 +74,62 @@ The observation interface may display governance-derived or governance-generated
 A reference implementation may use a particular set of observation dimensions.
 
 A customer implementation may use any capability-appropriate observation model that preserves the same authority and evidence boundaries.
+
+### 3.9 Long-term governance identity is system-assigned and stable
+
+For each long-term governance observation instance, the governance system shall generate exactly one canonical long-term governance identity when that observation is first accepted.
+
+The customer may receive and retain this identity but must not select, replace, regenerate, or gain canonical authority over it merely by supplying an equal or similarly named value.
+
+Normal creation of later governance sessions must reuse the stored long-term governance identity and must not rotate or replace it.
+
+The physical string format of the long-term identity is implementation-defined. Product-specific prefixes or identifier shapes from a reference implementation are not universal requirements.
+
+### 3.10 Session identity is distinct and successor continuity is explicit
+
+Each new governance observation session shall have its own governance-generated session identity.
+
+Session identity may rotate while the long-term governance identity remains unchanged.
+
+The first session is the root of the long-term observation. Each later session shall be explicitly bound as the successor of the immediate current tail under the same long-term governance identity.
+
+Time ordering alone is not sufficient successor authority.
+
+Duplicate session reuse, arbitrary older-predecessor attachment, and cross-long-term successor rebinding are not valid continuation operations.
+
+### 3.11 The Control Room locator is long-term and stable
+
+Each long-term governance identity shall have a stable read-only Control Room locator bound to that long-term observation rather than to an individual session.
+
+Opening a root session, rotating a session identity, or appending a valid successor must not rotate the Control Room locator.
+
+The locator's physical URL shape is implementation-defined, but it must continue to resolve unambiguously to the same long-term governance observation.
+
+Write tokens, write credentials, secrets, and equivalent execution authority must not be required in or granted by the read-only Control Room locator.
+
+### 3.12 Cross-session history and trajectory are append-only
+
+All sessions bound to one long-term governance identity form ordered append-only history.
+
+Appending a successor must preserve prior session order, prior readable events, and prior valid trajectory points.
+
+A session with persisted history but no valid trajectory point remains part of the long-term history, may have a successor, and must not be deleted or synthetically promoted into a valid trajectory point merely to make trajectory cardinality match session cardinality.
+
+Valid trajectory points accumulate across successor sessions and retain linkage to their source sessions.
+
+History or trajectory from different long-term governance identities must not be silently merged.
+
+### 3.13 Customer handoff exposes the durable entry point
+
+At the initial long-term governance handoff, the supported customer flow shall expose the system-assigned long-term governance identity and its stable read-only Control Room URL.
+
+The handoff shall explain that future governance sessions continue to accumulate under the same long-term observation and shall explicitly instruct the customer to save or retain the long-term identity and Control Room URL.
+
+Customer-facing wording and layout are implementation-defined.
+
+Displaying or redisplaying the identity and URL does not grant canonical identity selection authority or governance write authority, and redisplay must not generate a replacement long-term identity.
+
+This version does not require login-based discovery, username/password recovery, SSO recovery, account mapping, or forgotten-URL recovery.
 
 ## 4. Integration procedure
 
@@ -174,27 +230,95 @@ The selected observation dimensions are implementation-defined.
 
 The observation interface must not modify governance authority.
 
-#### Step 8.1 — Return an observation locator
+#### Step 8.1 — Establish the long-term governance identity
 
-For each accepted observable execution or observation session, the integration shall return or expose an implementation-defined execution identity and a read-only observation locator bound to that same execution or session.
+When the first accepted long-term governance observation is established, the governance system shall generate exactly one canonical long-term governance identity.
+
+The customer must not be required or permitted to design, select, or supply the canonical long-term governance identity.
+
+When the observation already has a canonical long-term identity, later sessions shall reuse that stored identity rather than generating a replacement.
+
+A customer-native execution, workflow, continuity, correlation, or similar identifier may remain useful customer input context, but value equality or naming similarity does not grant canonical governance identity authority.
+
+#### Step 8.2 — Create the session identity and ordered successor relation
+
+Each accepted governance observation session shall have a distinct governance-generated session identity.
+
+The first session shall be recorded as the root session.
+
+Each later session shall:
+
+- use a new session identity;
+- remain bound to the same long-term governance identity;
+- declare an explicit `SUCCESSOR_OF` relation;
+- reference the immediate current tail as its predecessor;
+- preserve all existing session order and history.
+
+The integration shall reject or hold duplicate session reuse, arbitrary non-tail predecessor attachment, cross-long-term predecessor attachment, or ambiguous predecessor state.
+
+Time ordering by itself must not be treated as sufficient successor authority.
+
+#### Step 8.3 — Return the stable long-term Control Room locator
+
+The supported customer flow shall expose a stable read-only Control Room URL or equivalent URL-addressable locator bound to the long-term governance identity.
+
+The locator shall remain stable when:
+
+- the root session is opened;
+- a new session identity is created;
+- a valid successor is appended;
+- additional history or valid trajectory points are recorded.
+
+The same long-term governance identity must continue to resolve to the same long-term observation locator.
 
 The customer or user must not be required to discover internal storage paths, search evidence bundles, guess an identifier, or infer the observation target from unrelated runtime data.
 
-The locator may be a URL, opaque identifier, signed reference, API resource, or equivalent implementation-defined handle.
+The locator's physical path and identifier representation are implementation-defined.
 
-The supported user flow shall ensure that:
+Locator resolution must remain read-only. Write tokens, write credentials, secrets, and equivalent execution authority must not be embedded in or required by the customer-facing Control Room locator.
 
-- the execution or session identity is returned to the caller or otherwise surfaced to the user;
-- the observation locator resolves unambiguously to that same execution or session;
-- locator resolution remains read-only and grants no governance or execution authority;
-- internal write credentials, secrets, and authorization tokens are not required in the observation locator;
-- when no valid observation locator can be produced, the integration reports observation unavailable rather than substituting or guessing another execution.
+If the long-term identity and locator cannot be paired unambiguously, the integration shall report observation unavailable or hold rather than substituting or guessing another observation.
+
+#### Step 8.4 — Preserve cross-session history and trajectory
+
+The Control Room shall represent the long-term observation rather than only the latest session.
+
+For every valid successor append:
+
+- prior bound sessions remain in ordered history;
+- prior session events remain readable;
+- prior valid trajectory points remain readable;
+- the new session is appended rather than replacing prior history;
+- each valid new trajectory point retains linkage to its source session and follows successor order.
+
+A session with persisted history but no valid trajectory point remains part of the ordered session history and may have a successor.
+
+Absence of a valid trajectory point must not cause the session to be deleted and must not authorize creation of a synthetic valid point.
+
+The number of sessions, events, or trajectory points is implementation-defined. Reference implementation counts are evidence examples, not universal customer thresholds.
+
+History and trajectory belonging to different long-term governance identities must not be merged.
+
+#### Step 8.5 — Present the durable customer handoff
+
+At the initial long-term governance handoff, the supported customer flow shall clearly surface:
+
+- the system-assigned long-term governance identity;
+- the stable read-only Control Room URL bound to that same identity;
+- a notice that future governance sessions continue to accumulate under the same long-term observation;
+- an explicit instruction to save or retain the long-term identity and Control Room URL.
+
+Exact customer-facing wording and layout are implementation-defined.
+
+Redisplaying an already established identity and URL is allowed, but redisplay must reuse the existing values and must not generate a new long-term identity.
+
+This handoff does not require or imply forgotten-URL recovery, account lookup, username/password recovery, SSO recovery, or customer authority to alter the canonical identity.
 
 ### Step 9 — Run acceptance gates
 
 Execute the acceptance requirements defined in `04_ACCEPTANCE_AND_VERIFICATION_GATES_v0_1.md`.
 
-A failed authority, provenance, mapping, fallback, portability, or observation-handoff gate blocks formal integration close.
+A failed authority, provenance, mapping, fallback, portability, long-term identity, successor continuity, history-preservation, trajectory-linkage, observation-locator, or customer-handoff gate blocks formal integration close.
 
 ### Step 10 — Seal the customer integration package
 
@@ -209,7 +333,13 @@ The customer-specific integration package should include:
 - acceptance evidence;
 - integration adapter identity/version;
 - evidence and replay references;
-- execution/session identity and observation-locator handoff evidence;
+- system-assigned long-term governance identity evidence;
+- governance session identity and ordered successor evidence;
+- stable read-only Control Room locator handoff evidence;
+- customer presentation and save-reminder evidence;
+- cross-session history-preservation evidence;
+- trajectory-to-session linkage evidence when trajectory points exist;
+- explicit preservation evidence for any recorded partial session;
 - final acceptance result.
 
 ## 5. Customer-specific completion rule
@@ -231,7 +361,19 @@ Do not:
 - infer provenance from field names;
 - silently promote an optional input to required;
 - silently use fallback without contract authorization;
-- require the user to search internal evidence or guess an observation-session identifier;
+- require the user to search internal evidence or guess a governance identifier;
+- allow the customer or public caller to select, replace, or self-authorize the canonical long-term governance identity;
+- rotate the long-term governance identity merely because a new session is created;
+- rotate the stable Control Room locator merely because a new session is created or appended;
+- reuse one governance session identity for different sessions;
+- attach a successor to an arbitrary older predecessor when an immediate current tail exists;
+- bind a predecessor, successor, history record, or trajectory point across different long-term governance identities;
+- delete or replace prior session history when a successor is appended;
+- delete or replace prior valid trajectory points when a successor is appended;
+- delete a persisted partial session merely because it has no valid trajectory point;
+- synthesize a valid trajectory point merely to make trajectory count equal session count;
+- include write credentials, secrets, or write tokens in the customer-facing Control Room locator;
+- imply login-based, account-based, SSO, or forgotten-URL recovery as a v0.1.2 requirement;
 - close the integration when applicable required mappings are unresolved.
 
 ## 7. Completion criterion
@@ -246,6 +388,17 @@ A customer integration is ready for formal close only when:
 6. the four-class responsibility boundary is preserved;
 7. governance-derived and governance-generated outputs remain governance-owned;
 8. observation remains read-only;
-9. each accepted observable execution exposes an execution/session identity and a read-only observation locator bound to that same execution;
-10. acceptance gates pass;
-11. the customer-specific evidence package is sealed.
+9. exactly one governance-system-assigned canonical long-term identity has been established for the accepted long-term observation instance;
+10. the customer or public caller cannot select or replace that canonical long-term identity;
+11. every new governance session has a distinct session identity while the long-term identity remains unchanged;
+12. every non-root session has an explicit ordered successor relation to the immediate current tail under the same long-term identity;
+13. one stable read-only Control Room locator remains bound to the long-term governance identity across session rotation and successor append;
+14. the customer-facing Control Room locator contains or requires no write credential;
+15. the initial customer handoff surfaces the long-term governance identity and stable Control Room URL;
+16. the initial customer handoff explains future-session continuity and explicitly instructs the customer to save or retain the long-term identity and Control Room URL;
+17. prior sessions and prior recorded events remain readable after successor append;
+18. prior valid trajectory points remain preserved and ordered by their linked successor sessions;
+19. any persisted partial session without a valid trajectory point remains in ordered history without synthetic promotion;
+20. cross-long-term history, successor, and trajectory merging is rejected or held;
+21. acceptance gates pass;
+22. the customer-specific evidence package is sealed.

@@ -1,6 +1,6 @@
 # DriftShield Reference Implementation Appendix
 
-Version: v0.1.1
+Version: v0.1.2
 
 Release: Public
 
@@ -19,9 +19,12 @@ The reference implementation proves:
 - real ingress/output responsibility boundaries;
 - reusable integration-contract concepts;
 - a read-only governance observation path;
+- long-term governance observation continuity across multiple observation sessions;
+- stable long-term Control Room access while session identities rotate;
+- preservation of prior session history and valid cross-session trajectory state;
 - one real workflow and acceptance close;
 - the authority separation between customer facts and governance state;
-- traceability from proven runtime facts into reusable SOP rules.
+- traceability from sealed reference evidence and locked governance contracts into reusable SOP rules.
 
 ## 3. Reference observation dimensions
 
@@ -31,23 +34,37 @@ These are reference governance-observation exemplars.
 
 They are not mandatory universal axes.
 
-### 3.1 Reference observation-locator handoff
+### 3.1 Reference long-term observation and Control Room handoff
 
-In the DriftShield/HIC reference implementation, one `task_window_id` identifies one isolated observation session.
+In the DriftShield/HIC reference implementation, one governance-generated `observation_stream_id` identifies the canonical long-term governance observation.
 
-When a Task Window is opened, the runtime returns the generated `task_window_id` to the caller. The supported client flow retains that execution identity and exposes the corresponding read-only Control Room locator:
+Each individual observation session receives its own governance-generated `task_window_id`.
 
-Reference locator shape:
+The first Task Window is the root session. Later Task Windows are appended as ordered successors under the same `observation_stream_id`; session identity rotation does not rotate the long-term observation identity.
 
+The supported client flow surfaces the canonical long-term observation identity and a read-only Control Room locator bound to that long-term observation.
+
+Reference identifier and locator shapes currently include:
+
+- `observation_stream_id = os_<32 lowercase hexadecimal characters>`
 - `task_window_id = tw_<32 lowercase hexadecimal characters>`
-- `https://clarixo.fun/?p=hic-governance-control-room&task_window_id=<task_window_id>`
+- `https://clarixo.fun/?p=hic-governance-control-room&observation_stream_id=<observation_stream_id>`
 
-The user is not expected to search server storage, evidence bundles, or internal export artifacts to discover this identifier.
+A newly created successor Task Window receives a new `task_window_id`, while the existing `observation_stream_id` and long-term Control Room locator remain unchanged.
 
-The `write_token` is a write-authorization credential and is not part of the read-only observation locator.
+Prior Task Windows and recorded events remain part of the same long-term observation history after successor sessions are appended.
 
-This URL shape is a DriftShield/HIC reference detail. Other customer integrations may use a different locator representation while preserving the same identity-binding and read-only requirements.
+A Task Window that has recorded history but no valid trajectory point may remain in the ordered session history and may have a later successor; absence of a valid trajectory point does not authorize deletion of that session or synthetic creation of a trajectory point.
 
+Valid governance trajectory points may accumulate across successor Task Windows while retaining their session linkage and successor order.
+
+The user is not expected to search server storage, evidence bundles, or internal export artifacts to discover the canonical long-term observation identity or Control Room locator.
+
+The `write_token` is a write-authorization credential and is not part of the read-only Control Room locator.
+
+The `os_...` and `tw_...` prefixes, hexadecimal lengths, query-parameter name, and URL shape above are DriftShield/HIC reference implementation details. Other customer integrations may use different identifier and locator representations while preserving the same long-term identity, session-rotation, continuity, and read-only authority boundaries.
+
+Displaying or retaining the long-term identifier or Control Room locator does not grant authority to select, replace, rotate, or rebind the canonical long-term governance identity.
 
 ## 4. Public authority source ledger
 

@@ -1,8 +1,8 @@
 # System-Agnostic Governance Integration SOP Package
 
-Version: v0.1.1
+Version: v0.1.2
 
-Status: Public Release v0.1.1 — post-close corrective release.
+Status: Public Release v0.1.2 — long-term observation continuity release.
 
 ## Purpose
 
@@ -34,7 +34,7 @@ A reference implementation proves that an integration method can work. It does n
 
 Customer integrations therefore bind customer-native data and runtime facts to semantic roles through an explicit Customer Input Mapping Contract.
 
-Governance-derived state and governance-generated artifacts remain under governance authority and cannot be asserted by the customer as authoritative governance state.
+Governance-derived state and governance-generated state, identities, read-only locators, and artifacts remain under governance authority and cannot be selected, supplied, replaced, rebound, or asserted by the customer as authoritative governance state.
 
 ## Package completion boundary
 
@@ -54,12 +54,16 @@ The public package does not disclose server filesystem locations, deployment top
 
 ## Release lineage
 
-This public package is version v0.1.1, a post-close corrective successor to public release v0.1.
+This public package is version v0.1.2, a long-term observation continuity successor to public release v0.1.1.
 
-The v0.1.1 correction adds an explicit observation-locator handoff requirement, ACCEPT-12, CHAIN-07, and the DriftShield/HIC task-window observation-locator reference.
+The v0.1.1 correction added an explicit observation-locator handoff requirement, ACCEPT-12, CHAIN-07, and the DriftShield/HIC task-window observation-locator reference.
 
-Documents whose normative content did not change retain their v0.1 document version. Updated documents carry v0.1.1 while stable filenames are preserved for reference continuity.
+The v0.1.2 release adds a governance-system-assigned canonical long-term governance identity, rotating governance session identities, a stable read-only Control Room URL, explicit ordered successor continuity, cross-session history and trajectory preservation, and a customer save-or-retain handoff requirement.
 
-The sealed source package also contains the corresponding machine-readable parity and corrective authority artifacts. Those internal evidence artifacts remain outside the public distribution boundary.
+DriftShield-specific `os_...` and `tw_...` identifier formats and Control Room URL shape remain reference implementation details and are not universal customer requirements.
 
-See `RELEASE_NOTES_v0_1_1.md` for the corrective release scope.
+The six normative and traceability documents updated for this release carry v0.1.2 while their stable filenames are preserved for reference continuity.
+
+The sealed source package also contains the corresponding machine-readable parity and release authority artifacts. Those internal evidence artifacts remain outside the public distribution boundary.
+
+See `RELEASE_NOTES_v0_1_1.md` for the historical corrective release scope and `RELEASE_NOTES_v0_1_2.md` for the current release scope.
