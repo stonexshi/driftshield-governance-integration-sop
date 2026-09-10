@@ -1,6 +1,6 @@
 # DriftShield Reference Implementation Appendix
 
-Version: v0.1
+Version: v0.1.1
 
 Release: Public
 
@@ -30,6 +30,24 @@ The reference implementation may include Behavioral Divergence, Genesis State Co
 These are reference governance-observation exemplars.
 
 They are not mandatory universal axes.
+
+### 3.1 Reference observation-locator handoff
+
+In the DriftShield/HIC reference implementation, one `task_window_id` identifies one isolated observation session.
+
+When a Task Window is opened, the runtime returns the generated `task_window_id` to the caller. The supported client flow retains that execution identity and exposes the corresponding read-only Control Room locator:
+
+Reference locator shape:
+
+- `task_window_id = tw_<32 lowercase hexadecimal characters>`
+- `https://clarixo.fun/?p=hic-governance-control-room&task_window_id=<task_window_id>`
+
+The user is not expected to search server storage, evidence bundles, or internal export artifacts to discover this identifier.
+
+The `write_token` is a write-authorization credential and is not part of the read-only observation locator.
+
+This URL shape is a DriftShield/HIC reference detail. Other customer integrations may use a different locator representation while preserving the same identity-binding and read-only requirements.
+
 
 ## 4. Public authority source ledger
 

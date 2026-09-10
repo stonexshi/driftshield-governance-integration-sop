@@ -1,6 +1,6 @@
 # System-Agnostic Customer Governance Integration SOP
 
-Version: v0.1
+Version: v0.1.1
 
 Release: Public
 
@@ -174,11 +174,27 @@ The selected observation dimensions are implementation-defined.
 
 The observation interface must not modify governance authority.
 
+#### Step 8.1 — Return an observation locator
+
+For each accepted observable execution or observation session, the integration shall return or expose an implementation-defined execution identity and a read-only observation locator bound to that same execution or session.
+
+The customer or user must not be required to discover internal storage paths, search evidence bundles, guess an identifier, or infer the observation target from unrelated runtime data.
+
+The locator may be a URL, opaque identifier, signed reference, API resource, or equivalent implementation-defined handle.
+
+The supported user flow shall ensure that:
+
+- the execution or session identity is returned to the caller or otherwise surfaced to the user;
+- the observation locator resolves unambiguously to that same execution or session;
+- locator resolution remains read-only and grants no governance or execution authority;
+- internal write credentials, secrets, and authorization tokens are not required in the observation locator;
+- when no valid observation locator can be produced, the integration reports observation unavailable rather than substituting or guessing another execution.
+
 ### Step 9 — Run acceptance gates
 
 Execute the acceptance requirements defined in `04_ACCEPTANCE_AND_VERIFICATION_GATES_v0_1.md`.
 
-A failed authority, provenance, mapping, fallback, or portability gate blocks formal integration close.
+A failed authority, provenance, mapping, fallback, portability, or observation-handoff gate blocks formal integration close.
 
 ### Step 10 — Seal the customer integration package
 
@@ -193,6 +209,7 @@ The customer-specific integration package should include:
 - acceptance evidence;
 - integration adapter identity/version;
 - evidence and replay references;
+- execution/session identity and observation-locator handoff evidence;
 - final acceptance result.
 
 ## 5. Customer-specific completion rule
@@ -214,6 +231,7 @@ Do not:
 - infer provenance from field names;
 - silently promote an optional input to required;
 - silently use fallback without contract authorization;
+- require the user to search internal evidence or guess an observation-session identifier;
 - close the integration when applicable required mappings are unresolved.
 
 ## 7. Completion criterion
@@ -228,5 +246,6 @@ A customer integration is ready for formal close only when:
 6. the four-class responsibility boundary is preserved;
 7. governance-derived and governance-generated outputs remain governance-owned;
 8. observation remains read-only;
-9. acceptance gates pass;
-10. the customer-specific evidence package is sealed.
+9. each accepted observable execution exposes an execution/session identity and a read-only observation locator bound to that same execution;
+10. acceptance gates pass;
+11. the customer-specific evidence package is sealed.

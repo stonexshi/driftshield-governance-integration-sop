@@ -1,8 +1,8 @@
 # System-Agnostic Governance Integration SOP Package
 
-Version: v0.1
+Version: v0.1.1
 
-Status: Public Release v0.1 — source package formally closed and accepted.
+Status: Public Release v0.1.1 — post-close corrective release.
 
 ## Purpose
 
@@ -50,3 +50,16 @@ The generic package does not pre-bind customer fields, sources, transforms, or p
 This release is intended for external review, implementation planning, interoperability discussion, and customer integration use.
 
 The public package does not disclose server filesystem locations, deployment topology, private export roots, credentials, secrets, or customer-specific bindings.
+
+
+## Release lineage
+
+This public package is version v0.1.1, a post-close corrective successor to public release v0.1.
+
+The v0.1.1 correction adds an explicit observation-locator handoff requirement, ACCEPT-12, CHAIN-07, and the DriftShield/HIC task-window observation-locator reference.
+
+Documents whose normative content did not change retain their v0.1 document version. Updated documents carry v0.1.1 while stable filenames are preserved for reference continuity.
+
+The sealed source package also contains the corresponding machine-readable parity and corrective authority artifacts. Those internal evidence artifacts remain outside the public distribution boundary.
+
+See `RELEASE_NOTES_v0_1_1.md` for the corrective release scope.
